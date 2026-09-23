@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: dramaforge
+      POSTGRES_PASSWORD: dramaforge
+      POSTGRES_DB: dramaforge
+    ports:
+      - "5432:5432"
+    volumes:
+      - dramaforge_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dramaforge -d dramaforge"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  dramaforge_pg:
