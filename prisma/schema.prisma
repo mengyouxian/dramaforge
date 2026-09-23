@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum JobStatus {
+  queued
+  processing
+  succeeded
+  failed
+}
+
+enum Plan {
+  free
+  pro
+  business
+  demo_pro
+  demo_business
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  passwordHash  String?
+  plan          Plan           @default(free)
+  creditBalance Int            @default(150000)
+  createdAt     DateTime       @default(now())
+  jobs          Job[]
+  ledger        CreditLedger[]
+}
+
+model Job {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status          JobStatus @default(queued)
+  sourceFilename  String
+  sourceKey       String
+  optionsJson     Json
+  resultMarkdown  String?   @db.Text
+  metaJson        Json?
+  errorMessage    String?
+  creditsReserved Int       @default(0)
+  creditsCharged  Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId, createdAt])
+}
+
+model CreditLedger {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  delta     Int
+  reason    String
+  jobId     String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
