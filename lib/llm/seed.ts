@@ -55,15 +55,18 @@ function paragraphs(text: string) {
 }
 
 function extractNames(text: string): string[] {
-  const counts = new Map<string, number>();
-  const re = /[\u4e00-\u9fff]{2,3}/g;
-  for (const match of text.matchAll(re)) {
-    const token = match[0];
-    if (STOP.has(token)) continue;
-    counts.set(token, (counts.get(token) ?? 0) + 1);
+  const scores = new Map<string, number>();
+  const add = (token: string, weight: number) => {
+    if (!/^[\u4e00-\u9fff]{2,3}$/.test(token) || STOP.has(token)) return;
+    scores.set(token, (scores.get(token) ?? 0) + weight);
+  };
+  for (const match of text.matchAll(/叫([\u4e00-\u9fff]{2,3})/g)) add(match[1], 6);
+  for (const para of text.split(/\n+/)) {
+    const lead = para.match(/^([\u4e00-\u9fff]{2})(?!的)/);
+    if (lead) add(lead[1], 3);
   }
-  return [...counts.entries()]
-    .filter(([, count]) => count >= 2)
+  return [...scores.entries()]
+    .filter(([, score]) => score >= 6)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 4)
     .map(([name]) => name);

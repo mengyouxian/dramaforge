@@ -32,7 +32,7 @@ SAFETY_MARGIN >= 2
 
 ## 没有 LLM Key 也能演示
 
-`LLM_PROVIDER=seed`，或 `LLM_API_KEY` 为空时，走内置 **SeedProvider**，不访问外网模型。样例原文：[`fixtures/sample-chapter.txt`](fixtures/sample-chapter.txt)。
+`LLM_PROVIDER=seed`，或 `LLM_API_KEY` 为空时，走内置 **SeedProvider**，不访问外网模型。样例原文：[`fixtures/lighthouse-tea.txt`](fixtures/lighthouse-tea.txt)。
 
 建议路径：落地页 → 定价 → 注册 → 新建任务（上传上面的 txt）→ 等种子稿 → 改一句并保存 → 导出 TXT / DOCX / PDF → 账户页看流水。Demo 模式下可以「补充 Demo 积分」或「模拟 Pro / Business」。Business 的多世界观对比会生成 **1 份完整稿 + 3 个标题位**（不是四份全文）。
 
